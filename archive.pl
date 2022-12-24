@@ -1174,9 +1174,19 @@ sub init_blacklist {
 				'path'  => '/manage/optin/ea',
 				'query' => qr/\bv=\b/,
 		},
-		'Delicious' => {
+		'Delicious 1' => {
 				'host'  => 'delicious.com',
 				'path'  => '/save',
+				'query' => qr/\burl=/,
+		},
+		'Delicious 2' => {
+				'host'  => 'del.icio.us',
+				'path'  => '/post',
+				'query' => qr/\burl=/,
+		},
+		'Digg' => {
+				'host'  => qr/^(www\.)?digg\.com$/,
+				'path'  => '/submit',
 				'query' => qr/\burl=/,
 		},
 		'Facebook 1' => {
@@ -1185,7 +1195,7 @@ sub init_blacklist {
 				'query' => qr/\bu=/,
 		},
 		'Facebook 2' => {
-				'host'  => qr/(www\.)?facebook.com/,,
+				'host'  => qr/(www\.)?facebook.com/,
 				'path'  => qr/^\/dialog\/(feed|share)/,
 				'query' => qr/\b(href|link)=/,
 		},
@@ -1259,6 +1269,11 @@ sub init_blacklist {
 				'path'  => '/web/shareView.nhn',
 				'query' => qr/\burl=/,
 		},
+		'Ok.Ru' => {
+				'host'  => qr/(www\.)?o(dno)?k(lassniki)\.ru$/,
+				'path'  => '/dk',
+				'query' => qr/\bst\._surl=/,
+		},
 		'Open Authorization' => {
 				'host'  => '',
 				'path'  => qr/\/oauth2?\/.+/,
@@ -1330,7 +1345,7 @@ sub init_blacklist {
 				'query' => qr/\b(url|text)=/,
 		},
 		'VK' => {
-				'host'  => 'vk.com',
+				'host'  => qr/vk(ontakte.ru|\.com)$/,
 				'path'  => '/share.php',
 				'query' => qr/\burl=/,
 		},
