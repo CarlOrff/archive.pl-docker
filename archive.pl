@@ -1250,12 +1250,12 @@ sub init_blacklist {
 				'query' => '',
 		},
 		'Linked In 1' => {
-				'host'  => 'www.linkedin.com',
+				'host'  => qr/^(www\.)?linkedin\.com/,
 				'path'  => '/shareArticle',
 				'query' => qr/\burl=/,
 		},
 		'Linked In 2' => {
-				'host'  => 'www.linkedin.com',
+				'host'  => qr/^(www\.)?linkedin\.com/,
 				'path'  => '/sharing/share-offsite/',
 				'query' => qr/\burl=/,
 		},
@@ -1331,8 +1331,8 @@ sub init_blacklist {
 		},
 		'Tumblr' => {
 				'host'  => 'www.tumblr.com',
-				'path'  => '/share',
-				'query' => qr/\bu=/,
+				'path'  => qr/^\/share(\/link)?/,
+				'query' => qr/\bu(rl)?=/,
 		},
 		'Twitter 1' => {
 				'host'  => qr/^(www\.)?twitter\.com$/,
