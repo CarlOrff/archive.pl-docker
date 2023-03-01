@@ -1401,7 +1401,7 @@ sub init_blacklist {
 		},
 		'Yahoo' => {
 				'host'  => 'add.my.yahoo.com',
-				'path'  => '/content',
+				'path'  => qr/\/(content|rss)/,
 				'query' => qr/\burl=/,
 		},
 		'Yahoo Calendar' => {
