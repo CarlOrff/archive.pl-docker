@@ -1277,7 +1277,7 @@ sub init_blacklist {
 		},
 		'Instagram' => {
 				'host'  => 'www.instagram.com',
-				'path'  => qr/^\/p\//,
+				'path'  => qr/^\/(p|invites\/contact)\//,
 				'query' => '',
 		},
 		'Jimdo 1' => {
@@ -1401,6 +1401,11 @@ sub init_blacklist {
 				'path'  => '/share',
 				'query' => qr/\b(url|text)=/,
 		},
+		'Twitter 3' => {
+				'host'  => qr/^(www\.)?twitter\.com$/,
+				'path'  => '/home',
+				'query' => '',
+		},
 		'VK' => {
 				'host'  => qr/vk(ontakte\.ru|\.com)$/,
 				'path'  => '/share.php',
@@ -1432,19 +1437,24 @@ sub init_blacklist {
 				'query' => qr/\bver=/,
 		},
 		'XING 1' => {
-				'host'  => 'www.xing.com',
+				'host'  => qr/^(www\.)?xing.com$/,
 				'path'  => '/spi/shares/new',
 				'query' => qr/\burl=/,
 		},
 		'XING 2' => {
-				'host'  => 'www.xing.com',
+				'host'  => qr/^(www\.)?xing.com$/,
 				'path'  => '/app/user',
 				'query' => qr/\bop=share\b/,
 		},
 		'XING 3' => {
-				'host'  => 'www.xing.com',
+				'host'  => qr/^(www\.)?xing.com$/,
 				'path'  => '/social/share/spi',
 				'query' => qr/\burl=/,
+		},
+		'XING 4' => {
+				'host'  => qr/^(www\.)?xing.com$/,
+				'path'  => '/social_plugins/share',
+				'query' => '',
 		},
 		'Yahoo' => {
 				'host'  => 'add.my.yahoo.com',
