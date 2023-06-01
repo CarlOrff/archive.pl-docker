@@ -10,6 +10,7 @@ RUN cpanm URI
 RUN cpanm URI::Encode
 RUN cpanm URI::URL
 RUN cpanm Browser::Open
+RUN cpanm Data::Dumper
 RUN cpanm DateTime
 RUN cpanm Feed::Find
 RUN cpanm FileHandle
@@ -27,6 +28,7 @@ RUN cpanm Image::Info
 RUN cpanm Image::Thumbnail
 RUN cpanm JSON::XS
 RUN cpanm List::Util
+RUN cpanm LWP::ConsoleLogger::Everywhere;
 RUN cpanm LWP::Protocol::socks
 RUN cpanm LWP::RobotUA
 RUN cpanm MIME::Base64
@@ -44,6 +46,8 @@ RUN cpanm WWW::RobotRules
 RUN cpanm XML::Atom::SimpleFeed
 RUN cpanm XML::Feed
 RUN cpanm XML::Twig
+RUN cpanm --uninstall LWP
+RUN cpanm LWP@6.68
 RUN wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --dearmor | tee /usr/share/keyrings/tor-archive-keyring.gpg >/dev/null
 RUN apt-get install -y tor deb.torproject.org-keyring --allow-unauthenticated
 RUN apt-get install -y bash --allow-unauthenticated
