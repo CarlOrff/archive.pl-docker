@@ -34,7 +34,6 @@ RUN cpanm LWP::RobotUA
 RUN cpanm MIME::Base64
 RUN cpanm Net::FTP
 RUN cpanm Net::IDN::Encode
-RUN cpanm Net::Twitter
 RUN cpanm PDF::API2
 RUN cpanm POSIX
 RUN cpanm Scalar::Util
