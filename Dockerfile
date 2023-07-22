@@ -1,4 +1,4 @@
-FROM perl:5.37.11-bullseye
+FROM perl:5.38.0-bullseye
 COPY tor.list /etc/apt/sources.list.d/
 RUN apt-get update --allow-insecure-repositories
 RUN apt-get install -y apt-utils --allow-unauthenticated
