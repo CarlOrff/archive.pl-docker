@@ -1161,12 +1161,17 @@ sub init_blacklist {
 		'Add to any' => {
 				'host'  => 'www.addtoany.com',
 				'path'  => qr/^\/add_to\//,
-				'query' => qr/(\A|[;&])linkurl=\b/,
+				'query' => qr/(\A|[;&])linkurl=/,
 		},
 		'Blogger' => {
 				'host'  => qr/^(draft|www)\.blogger\.com$/,
 				'path'  => qr/\.g$/,
 				'query' => '',
+		},
+		'Cell Press' => {
+				'host'  => 'www.cell.com',
+				'path'  => '/action/showLogin',
+				'query' => qr/(\A|[;&])redirectUri=/,
 		},
 		'ConstantContact' => {
 				'host'  => 'visitor.constantcontact.com',
@@ -1232,6 +1237,11 @@ sub init_blacklist {
 				'host'  => 'www.googletagmanager.com',
 				'path'  => '/ns.html',
 				'query' => qr/(\A|[;&])id=/,
+		},
+		'Gustav Springer Verlag' => {
+				'host'  => 'link.springer.com',
+				'path'  => '/signup-login',
+				'query' => '',
 		},
 		'Heise' => {
 				'host'  => 'www.heise.de',
