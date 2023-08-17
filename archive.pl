@@ -1193,6 +1193,11 @@ sub init_blacklist {
 				'path'  => qr/^\/newsletters\//,
 				'query' => qr/(\A|[;&])prm=/,
 		},
+		'Elsevier' => {
+				'host'  => 'id.elsevier.com',
+				'path'  => '',
+				'query' => '',
+		},
 		'Facebook 1' => {
 				'host'  => qr/(www\.)?facebook.com$/,
 				'path'  => qr/^\/(sharer\/)?sharer?\.php$/,
@@ -1242,6 +1247,11 @@ sub init_blacklist {
 				'host'  => 'link.springer.com',
 				'path'  => '/signup-login',
 				'query' => '',
+		},
+		'Gustav Springer Verlag (Nature)' => {
+				'host'  => qr/^idp(\.|-personal-authenticator\.springer)nature.com$/,
+				'path'  => qr/^\/(auth\/personal\/springernature|gateway)$/,
+				'query' => qr/(\A|[;&])redirect_uri=/,
 		},
 		'Heise' => {
 				'host'  => 'www.heise.de',
