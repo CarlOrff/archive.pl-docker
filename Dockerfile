@@ -28,7 +28,7 @@ RUN cpanm Image::Info
 RUN cpanm Image::Thumbnail
 RUN cpanm JSON::XS
 RUN cpanm List::Util
-RUN cpanm LWP::ConsoleLogger::Everywhere;
+RUN cpanm LWP::ConsoleLogger::Everywhere
 RUN cpanm LWP::Protocol::socks
 RUN cpanm LWP::RobotUA
 RUN cpanm MIME::Base64
