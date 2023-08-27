@@ -1183,7 +1183,7 @@ sub init_blacklist {
 		},
 		'Blogger' => {
 				'host'  => qr/^(draft|www)\.blogger\.com$/,
-				'path'  => qr/\.g$/,
+				'path'  => qr/(\.g$|^\/comment\/frame\/)/,
 				'query' => '',
 		},
 		'Cell Press' => {
@@ -1473,7 +1473,7 @@ sub init_blacklist {
 				'query' => qr/(\A|[;&])text=/,
 		},
 		'Wiley 1' => {
-				'host'  => 'onlinelibrary.wiley.com',
+				'host'  => qr/^(.+\.)?onlinelibrary.wiley.com$/,
 				'path'  => '/action/showLogin',
 				'query' => '',
 		},
