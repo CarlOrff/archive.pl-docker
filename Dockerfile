@@ -4,8 +4,9 @@ RUN apt-get update --allow-insecure-repositories
 RUN apt-get install -y apt-utils --allow-unauthenticated
 RUN apt install -y net-tools --allow-unauthenticated
 RUN apt-get -y install systemctl --allow-unauthenticated
-RUN apt-get -y install tsocks
+RUN apt-get -y install tsocks --allow-unauthenticated
 RUN apt install -y apt-transport-https --allow-unauthenticated
+RUN apt-get -y install dos2unix --allow-unauthenticated
 RUN cpanm URI
 RUN cpanm URI::Encode
 RUN cpanm URI::URL
@@ -54,5 +55,6 @@ RUN apt-get clean all
 COPY torrc /etc/tor/
 COPY . /usr/src/archive
 WORKDIR /usr/src/archive
+RUN dos2unix ./init.sh
 RUN chmod +x ./init.sh
 CMD ["/usr/src/archive/init.sh"]
