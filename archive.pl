@@ -1211,6 +1211,11 @@ sub init_blacklist {
 				'path'  => qr/^\/(post|save)$/,
 				'query' => qr/(\A|[;&])url=/,
 		},
+		'Diaspora' => {
+				'host'  => 'share.diasporafoundation.org',
+				'path'  => '',
+				'query' => qr/(\A|[;&])url=/,
+		},
 		'Digg' => {
 				'host'  => qr/^(www\.)?digg\.com$/,
 				'path'  => '/submit',
@@ -1256,6 +1261,11 @@ sub init_blacklist {
 			'path'  => '/compose',
 			'query' => qr/(\A|[;&])url=/,,
 		},
+		'Gettr' => {
+				'host'  => 'gettr.com',
+				'path'  => '/share',
+				'query' => '',
+		},
 		'Google Calendar' => {
 				'host'  => 'www.google.com',
 				'path'  => '/calendar/event',
@@ -1294,6 +1304,16 @@ sub init_blacklist {
 		'Instagram' => {
 				'host'  => 'www.instagram.com',
 				'path'  => qr/^\/(p|invites\/contact)\//,
+				'query' => '',
+		},
+		'Ionos 1' => {
+				'host'  => 'login.ionos.de',
+				'path'  => '',
+				'query' => '',
+		},
+		'Ionos 2' => {
+				'host'  => 'login.1and1-editor.com',
+				'path'  => '',
 				'query' => '',
 		},
 		'Jimdo 1' => {
@@ -1351,6 +1371,11 @@ sub init_blacklist {
 				'path'  => '/share',
 				'query' => qr/(\A|[;&])link=/,
 		},
+		'Microsoft' => {
+				'host'  => 'login.microsoftonline.com',
+				'path'  => '',
+				'query' => '',
+		},
 		'Mix' => {
 				'host'  => 'mix.com',
 				'path'  => '/mixit',
@@ -1389,7 +1414,7 @@ sub init_blacklist {
 		'Outlook Calendar' => {
 				'host'  => qr/outlook\.(live|office)\.com$/,
 				'path'  => qr/^\/owa\/?$/,
-				'query' => qr/(\A|[;&])path=\/calendar\/action\/compose\b/,
+				'query' => qr/(\A|[;&])path=/,
 		},
 		'Parler' => {
 				'host'  => 'parler.com',
@@ -1420,6 +1445,11 @@ sub init_blacklist {
 				'host'  => 'web.skype.com',
 				'path'  => '/share',
 				'query' => qr/(\A|[;&])url=/,
+		},
+		'Snapchat' => {
+				'host'  => 'www.snapchat.com',
+				'path'  => qr/^\/add\/.+/,
+				'query' => '',
 		},
 		'Stack Overflow 1' => {
 				'host'  => qr/[^|\.](askubuntu|serverfault|stack(exchange|overflow)|superuser)\.com$/,
@@ -1477,14 +1507,19 @@ sub init_blacklist {
 				'path'  => '/home',
 				'query' => '',
 		},
-		#'Twitter 4' => {
-		#		'host'  => qr/^(www\.)?(twitter|x)\.com$/,
-		#		'path'  => qr/^\/\w+(\/status\/.+)?$/,
-		#		'query' => qr/^$/,
-		#},
+		'Twitter 4' => {
+				'host'  => qr/^((www|mobile)\.)?(twitter|x)\.com$/,
+				'path'  => '',
+				'query' => '',
+		},
 		'VK' => {
 				'host'  => qr/vk(ontakte)?\.(ru|com)$/,
 				'path'  => '/share.php',
+				'query' => qr/(\A|[;&])url=/,
+		},
+		'Weibo' => {
+				'host'  => 'service.weibo.com',
+				'path'  => '/share/share.php',
 				'query' => qr/(\A|[;&])url=/,
 		},
 		'WhatsApp 1' => {
