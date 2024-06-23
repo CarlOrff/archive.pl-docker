@@ -1291,6 +1291,11 @@ sub init_blacklist {
 				'path'  => '/ns.html',
 				'query' => qr/(\A|[;&])id=/,
 		},
+		'Government Site Builder' => {
+				'host'  => '',
+				'path'  => qr/^\/error_path\//,
+				'query' => '',
+		},
 		'Gustav Springer Verlag' => {
 				'host'  => 'link.springer.com',
 				'path'  => '/signup-login',
