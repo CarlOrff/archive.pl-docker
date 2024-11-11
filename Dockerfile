@@ -1,4 +1,5 @@
 FROM perl:5.40.0-bookworm
+RUN cpanm --force HTML::Form
 COPY tor.list /etc/apt/sources.list.d/
 RUN apt-get update --allow-insecure-repositories
 RUN apt-get install -y apt-utils --allow-unauthenticated
@@ -12,12 +13,12 @@ RUN cpanm URI::Encode
 RUN cpanm URI::URL
 RUN cpanm Browser::Open
 RUN cpanm Data::Dumper
-RUN cpanm DateTime
+RUN cpanm --force Test2::Plugin::NoWarnings && cpanm Params::ValidationCompiler && cpanm DateTime
 RUN cpanm Feed::Find
 RUN cpanm FileHandle
 RUN cpanm FindBin
 RUN apt-get -y install xvfb --allow-unauthenticated
-RUN apt-get install -y --allow-unauthenticated firefox-esr
+RUN apt-get install -y --allow-unauthenticated --no-install-recommends firefox-esr
 RUN xvfb-run firefox &
 RUN cpanm Firefox::Marionette
 RUN apt-get -y install libgd-dev --allow-unauthenticated && cpanm GD
@@ -29,7 +30,7 @@ RUN cpanm Image::Info
 RUN cpanm Image::Thumbnail
 RUN cpanm JSON::XS
 RUN cpanm List::Util
-RUN cpanm LWP::ConsoleLogger::Everywhere
+#RUN cpanm LWP::ConsoleLogger::Everywhere
 RUN cpanm LWP::Protocol::socks
 RUN cpanm LWP::RobotUA
 RUN cpanm MIME::Base64

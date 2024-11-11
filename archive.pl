@@ -101,7 +101,7 @@ if ( scalar @ARGV == 0 ) {
 ##################################################################################################
 
 
-my $VERSION = "2.4";
+my $VERSION = "2.5";
 my $botname = "archive.pl-$VERSION";
 my @urls;
 my $author_delimiter = '/';
@@ -279,9 +279,10 @@ foreach my $url ( @urls ) {
 	
 	my $parsed_url = new URI $url;
 	my $host = $parsed_url->host;
-	next if $host eq 'web.archive.org';  # IA doesn't save its own copies again
 	my $scheme = $parsed_url->scheme;
 	next if $scheme !~ /^https?$/;  # IA doen't save non-HTTP schemes
+	my $port = $parsed_url->port;
+	$host .= ':'.$port if defined $port && ( $port != 80 && $port != 443 );
 	my $path = $parsed_url->path;
 	my $query = $parsed_url->query;
 	my $path_query = $path;
@@ -820,32 +821,39 @@ foreach my $url ( @urls ) {
 	### TO DO. save various URL shapes here
 	my %urls;
 	$urls{$url}++;
+	$urls{ bare_url( $url ) }++;
 	
-	foreach ( keys %urls ) {
+	if ( $host ne 'web.archive.org' ) {
 	
-		my $available = get_wayback_available( $_ );
+		foreach ( keys %urls ) {
 		
-		say "Available in Wayback Machine:";
-		if ( 'HASH' eq Scalar::Util::reftype($available) ) {
-			say "\tURL: " . $$available{url} if exists( $$available{url} );
-			say "\tavailable: " . $$available{archived_snapshots}{closest}{available} if exists( $$available{archived_snapshots}{closest}{available} );
-			say "\tstatus: " . $$available{archived_snapshots}{closest}{status} if exists( $$available{archived_snapshots}{closest}{status} );
-			if (exists( $$available{archived_snapshots}{closest}{timestamp} ) ) {
-				$$available{archived_snapshots}{closest}{timestamp} =~ s/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/$3.$2.$1 $4:$5:$6/;
-				say "\tclosest: " . $$available{archived_snapshots}{closest}{timestamp};
+			my $available = get_wayback_available( $_ );
+			
+			say "Available in Wayback Machine:";
+			if ( 'HASH' eq Scalar::Util::reftype($available) ) {
+				say "\tURL: " . $$available{url} if exists( $$available{url} );
+				say "\tavailable: " . $$available{archived_snapshots}{closest}{available} if exists( $$available{archived_snapshots}{closest}{available} );
+				say "\tstatus: " . $$available{archived_snapshots}{closest}{status} if exists( $$available{archived_snapshots}{closest}{status} );
+				if (exists( $$available{archived_snapshots}{closest}{timestamp} ) ) {
+					$$available{archived_snapshots}{closest}{timestamp} =~ s/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/$3.$2.$1 $4:$5:$6/;
+					say "\tclosest: " . $$available{archived_snapshots}{closest}{timestamp};
+				}
+			}
+			else {
+				say "\tCan't check: $available ";
+			}
+		
+			if ( $opts{D} ) {
+				say 'DEBUG mode active: not submitted to Internet Archive!';
+			}
+			else {
+				download_wayback( $_ );
 			}
 		}
-		else {
-			say "\tCan't check: $available ";
-		}
-	
-		if ( $opts{D} ) {
-			say 'DEBUG mode active: not submitted to Internet Archive!';
-		}
-		else {
-			download_wayback( $_ );
-		}
-	} 
+	}
+	else {
+		say "Wayback Machine doesn\'t store its own copies again.";
+	}
 		
 	$download_method = 0;
 	
@@ -934,7 +942,8 @@ if ($opts{l}) {
 	if (defined keys %linked) {
 		say "\nsaving linked documents:";
 		
-		grep { delete( $linked{ $_ } ) if $_ !~ /^https?:\/\/\w/ || $_ =~ /^https?:\/\/\web\.archive\.org\// } keys %linked;
+		grep { delete( $linked{ $_ } ) if $_ !~ /^https?:\/\/\w/ } keys %linked;
+		grep { delete( $linked{ $_ } ) if url_is_blacklisted( $_ ) } keys %linked;
 		say 'Saving ' . scalar( values %linked ) . ' URLs';
 		
 		my $lrun = 0;
@@ -942,8 +951,6 @@ if ($opts{l}) {
 		foreach my $linked (keys %linked) {
 			
 			next if exists( $urls_seen{ $linked } );
-			next if url_is_blacklisted( $linked );
-			#say 'not blacklisted';
 			
 			say '#' . ++$lrun . ' ' . $linked;
 			
@@ -962,6 +969,31 @@ say "Execution time: $duration s";
 # Subroutines
 ##################################################################################################
 
+# arg 1: URL
+# returns URL stripped off unnecessary query params
+sub bare_url {
+	my $u = URI->new( $_[0] );
+	my $_query = $u->query;
+	my $_host = $u->host;
+
+	if    ( index( $_host, 'theguardian.com' ) > -1 )  { $_query =~ s/(\A|[&;])CMP=[^&]*// }         # Guardian
+	elsif ( index( $_host, 'blogspot.' ) > -1 )        { $_query =~ s/(\A|[&;])(spref|m)=[^&]*//g }  # blogger.com
+	elsif ( index( $_host, 'heise.de' ) > -1 )         { $_query =~ s/(\A|[&;])wt_mc=[^&]*// }       # Heise
+	elsif ( index( $_host, 'lemonde.fr' ) > -1 )       { $_query =~ s/(\A|[&;])lmd_[a-z]+=[^&]*//g } # Le Monde
+	elsif ( index( $_host, 'elpais.com' ) > -1 )       { $_query =~ s/(\A|[&;])ssm=[^&]*// }         # El País
+	elsif ( index( $_host, 'youtube.com' ) > -1 )      { $_query =~ s/(\A|[&;])featured=[^&]*// }    # Youtube
+	elsif ( index( $_host, 'ingram-braun.net' ) > -1 ) { $_query =~ s/(\A|[&;])ib_[a-z]+=[^&]*//g }  # me
+	
+	$_query =~ s/(\A|[&;])ref(errer)?=[^&]*//;
+	$_query =~ s/(\A|[&;])(fb|g|tw)clid=[^&]*//g;       # FB, Google, Twitter
+	$_query =~ s/(\A|[&;])sfnsn=[^&]*//;                # FB
+	$_query =~ s/(\A|[&;])(utm|pk)_[a-z]+=[^&]*//g;     # Matomo, GA
+	$_query =~ s/(\A|[&;])google_editor_picks=?[^&]*//; # Google News
+	$_query =~ s/\A&//;                              # leading ampersand
+
+	$u->query( $_query );
+	return $u->as_string;
+}
 
 # arg 1: string
 # returns string stripped off HTML tags and HTML entities
@@ -1266,6 +1298,11 @@ sub init_blacklist {
 			'path'  => '/compose',
 			'query' => qr/(\A|[;&])url=/,,
 		},
+		'Geocities' => {
+				'host'  => qr/(\A|\.)geocities\.(co\.jp|(yahoo\.)?com)$/,
+				'path'  => '',
+				'query' => '',
+		},
 		'Gettr' => {
 				'host'  => 'gettr.com',
 				'path'  => '/share',
@@ -1286,6 +1323,11 @@ sub init_blacklist {
 				'path'  => '',
 				'query' => '',
 		},
+		'Google Syndication' => {
+				'host'  => qr/\.googlesyndication\.com$/,
+				'path'  => '',
+				'query' => '',
+		},
 		'Google Tag Manager' => {
 				'host'  => 'www.googletagmanager.com',
 				'path'  => '/ns.html',
@@ -1293,7 +1335,7 @@ sub init_blacklist {
 		},
 		'Government Site Builder' => {
 				'host'  => '',
-				'path'  => qr/^\/error_path\//,
+				'path'  => qr/^\/error_path\//, 
 				'query' => '',
 		},
 		'Gustav Springer Verlag' => {
@@ -1366,6 +1408,11 @@ sub init_blacklist {
 				'path'  => qr/\/signup\/.*/,
 				'query' => '',
 		},
+		'Localhost' => {
+				'host'  => qr/^([a-zA-Z\d][a-zA-Z\-\d\.]+\.)?localhost$/,
+				'path'  => '',
+				'query' => '',
+		},
 		'Mastodon 1' => {
 				'host'  => qr/^[\w-\.]+\.social$/,
 				'path'  => '/share',
@@ -1375,6 +1422,11 @@ sub init_blacklist {
 				'host'  => qr/^m(astodo|std)n\..+/,
 				'path'  => '/share',
 				'query' => qr/(\A|[;&])text=/,
+		},
+		'MastodonShare' => {
+				'host'  => 'mastodonshare.com',
+				'path'  => '',
+				'query' => qr/(\A|[;&])url=/,
 		},
 		'Mendeley' => {
 				'host'  => 'www.mendeley.com',
@@ -1496,6 +1548,11 @@ sub init_blacklist {
 				'path'  => '',
 				'query' => '',
 		},
+		'Technorati' => {
+				'host'  => 'technorati.com',
+				'path'  => '/faves',
+				'query' => '',
+		},
 		'Tumblr 1' => {
 				'host'  => qr/^(www\.)?tumblr\.com$/,
 				'path'  => qr/^\/share(\/link)?/,
@@ -1532,6 +1589,21 @@ sub init_blacklist {
 				'path'  => '/share.php',
 				'query' => qr/(\A|[;&])url=/,
 		},
+		'Wayback Machine 1' => {
+				'host'  => 'web.archive.org',
+				'path'  => '',
+				'query' => '',
+		},
+		'Wayback Machine 2' => {
+				'host'  => 'archive.org',
+				'path'  => qr/^\/(details|includes|web)\//,
+				'query' => '',
+		},
+		'Wayback Machine 3' => {
+				'host'  => 'faq.web.archive.org',
+				'path'  => '',
+				'query' => '',
+		},
 		'Weibo' => {
 				'host'  => 'service.weibo.com',
 				'path'  => '/share/share.php',
@@ -1565,7 +1637,7 @@ sub init_blacklist {
 		'WordPress 2' => {
 				'host'  => '',
 				'path'  => '',
-				'query' => qr/(\A|[;&])share=(facebook|email|instagram|jetpack-whatsapp|linkedin|pinterest|pocket|reddit|telegram|tumblr|twitter)\b/,
+				'query' => qr/(\A|[;&])share=(facebook|email|instagram|jetpack-whatsapp|linkedin|mastodon|nextdoor|pinterest|pocket|reddit|telegram|tumblr|twitter)\b/,
 		},
 		'WordPress 3' => {
 				'host'  => 'widgets.wp.com',
