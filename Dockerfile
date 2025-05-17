@@ -1,5 +1,4 @@
-FROM perl:5.40.0-bookworm
-RUN cpanm --force HTML::Form
+FROM perl:5.40.2-bookworm
 COPY tor.list /etc/apt/sources.list.d/
 RUN apt-get update --allow-insecure-repositories
 RUN apt-get install -y apt-utils --allow-unauthenticated
