@@ -876,21 +876,27 @@ if ( $wp ) {
 
 	say "Posting on WordPress!";
 	
-	my $api = WP::API->new(
-		username         => $opts{n},
-		password         => $opts{p},
-		proxy            => $opts{u},
-		server_time_zone => ($opts{z}) ? $opts{z} : 'UTC',
-		blog_id => ($opts{d}) ? $opts{d} : 1,
-	);
-	 
-	# fix atabse saving error with 8bit ASCII 
-	my $post = $api->post()->create(
-		post_title    => $out_title,
-		#post_date_gmt => $dt,
-		post_content  => encode_entities( decode_entities( $outfile ), '^\n\x20-\x25\x27-\x7e' ),
-		#post_author   => 42,
-	);
+	local $@;
+	
+	eval {
+	
+		my $api = WP::API->new(
+			username         => $opts{n},
+			password         => $opts{p},
+			proxy            => $opts{u},
+			server_time_zone => ($opts{z}) ? $opts{z} : 'UTC',
+			blog_id => ($opts{d}) ? $opts{d} : 1,
+		);
+		 
+		# fix databse saving error with 8bit ASCII 
+		my $post = $api->post()->create(
+			post_title    => $out_title,
+			#post_date_gmt => $dt,
+			post_content  => encode_entities( decode_entities( $outfile ), '^\n\x20-\x25\x27-\x7e' ),
+			#post_author   => 42,
+		);
+	
+	}
 }
 
 # create file name
