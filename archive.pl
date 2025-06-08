@@ -274,7 +274,7 @@ foreach my $url ( @urls ) {
 
 	
 	# don't fetch empty URLs
-	next if length $url < 1 || exists( $urls_seen{ $url } ); # avoid empty lines or duplicate URLs
+	next if length $url < 7 || exists( $urls_seen{ $url } ) || index( $url, 'http' ) != 0; # avoid empty lines or duplicate URLs
 	
 	my $parsed_url = new URI $url;
 	my $host = $parsed_url->host;
