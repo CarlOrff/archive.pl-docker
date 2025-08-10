@@ -8,6 +8,7 @@ xvfb-run firefox &
 netstat -natup
 
 perl -le 'eval "require $ARGV[0]" and print "LWP " . $ARGV[0]->VERSION' LWP
+perl -le 'eval "require $ARGV[0]" and print "WWW::YaCyBlacklist " . $ARGV[0]->VERSION' WWW::YaCyBlacklist
 perl proxytest.pl
 
 perl archive.pl -v

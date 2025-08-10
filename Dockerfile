@@ -1,4 +1,4 @@
-FROM perl:5.40.2-bookworm
+FROM perl:5.42.0-bullseye
 COPY tor.list /etc/apt/sources.list.d/
 RUN apt-get update --allow-insecure-repositories
 RUN apt-get install -y apt-utils --allow-unauthenticated
@@ -14,6 +14,7 @@ RUN cpanm Browser::Open
 RUN cpanm Data::Dumper
 RUN cpanm --force Test2::Plugin::NoWarnings && cpanm Params::ValidationCompiler && cpanm DateTime
 RUN cpanm Feed::Find
+RUN cpanm Encode
 RUN cpanm FileHandle
 RUN cpanm FindBin
 RUN apt-get -y install xvfb --allow-unauthenticated
@@ -27,6 +28,7 @@ RUN cpanm HTML::LinkExtor
 RUN cpanm HTML::Strip
 RUN cpanm Image::Info
 RUN cpanm Image::Thumbnail
+RUN cpanm IO::All;
 RUN cpanm JSON::XS
 RUN cpanm List::Util
 #RUN cpanm LWP::ConsoleLogger::Everywhere
@@ -43,6 +45,7 @@ RUN cpanm Web::Scraper
 RUN cpanm --force XMLRPC::Lite && cpanm WP::API
 RUN cpanm WWW::Mechanize
 RUN cpanm WWW::RobotRules
+RUN cpanm WWW::YaCyBlacklist
 RUN cpanm XML::Atom::SimpleFeed
 RUN cpanm XML::Feed
 RUN cpanm XML::Twig
@@ -56,5 +59,7 @@ COPY torrc /etc/tor/
 COPY . /usr/src/archive
 WORKDIR /usr/src/archive
 RUN dos2unix ./init.sh
+RUN dos2unix ./default.black
+RUN dos2unix ./archive.pl
 RUN chmod +x ./init.sh
 CMD ["/usr/src/archive/init.sh"]
