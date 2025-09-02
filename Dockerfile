@@ -13,6 +13,8 @@ RUN cpanm URI::URL
 RUN cpanm Browser::Open
 RUN cpanm Data::Dumper
 RUN cpanm --force Test2::Plugin::NoWarnings && cpanm Params::ValidationCompiler && cpanm DateTime
+RUN cpanm LWP::Protocol::socks
+RUN cpanm LWP::RobotUA
 RUN cpanm Feed::Find
 RUN cpanm Encode
 RUN cpanm FileHandle
@@ -32,8 +34,6 @@ RUN cpanm IO::All;
 RUN cpanm JSON::XS
 RUN cpanm List::Util
 #RUN cpanm LWP::ConsoleLogger::Everywhere
-RUN cpanm LWP::Protocol::socks
-RUN cpanm LWP::RobotUA
 RUN cpanm MIME::Base64
 RUN cpanm Net::FTP
 RUN cpanm Net::IDN::Encode
